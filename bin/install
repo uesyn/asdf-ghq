@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+install_ghq() {
+  local install_type=$1
+  local version=$2
+  local install_path=$3
+  local concurrency=$3
+
+  if [ "${install_type}" != "version" ]; then
+    echo "Cannot install specific ref from source, sorry." >&2
+    echo "For a list of available versions, see \`asdf list-all neovim\`." >&2
+    exit 1
+  fi
+
+  if ! type "unzip" &>/dev/null; then
+    echo "ERROR: unzip not found" >&2
+    exit 1
+  fi
+
+  case $OSTYPE in
+  darwin*)
+    local platform="darwin"
+    ;;
+  linux*)
+    local platform="linux"
+    ;;
+  *)
+    echo "unsupported platform" >&2
+    exit 1
+    ;;
+  esac
+
+  local tmp_dir=$(mktemp -d -t ghq_XXXXXX)
+  local archive_path="${tmp_dir}/ghq.zip"
+
+  local cmd="curl -o ${archive_path} -sL"
+  if [ -n "$GITHUB_API_TOKEN" ]; then
+    cmd="$cmd --header 'Authorization: token $GITHUB_API_TOKEN'"
+  fi
+
+  ${cmd} https://github.com/motemen/ghq/releases/download/${version}/ghq_${platform}_amd64.zip
+
+  unzip -q -d ${tmp_dir} ${archive_path} || exit 1
+  mkdir -p "${install_path}/bin"
+  cp ${tmp_dir}/ghq_${platform}_amd64/ghq ${install_path}/bin/ghq
+}
+
+install_ghq "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH" "$ASDF_CONCURRENCY"
