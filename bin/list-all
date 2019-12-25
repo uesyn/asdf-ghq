@@ -15,6 +15,4 @@ sort_versions() {
     LC_ALL=C sort -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n | awk '{print $2}'
 }
 
-versions=$($cmd $releases_url | grep 'tag_name' | sed -E "s/.*(v.*)\",/\1/" | sort_versions | xargs)
-
-echo "$versions"
+$cmd $releases_url | grep 'tag_name' | sed -E "s/.*v(.*)\",/\1/" | sort_versions | xargs

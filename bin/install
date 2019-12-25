@@ -8,7 +8,7 @@ install_ghq() {
 
   if [ "${install_type}" != "version" ]; then
     echo "Cannot install specific ref from source, sorry." >&2
-    echo "For a list of available versions, see \`asdf list-all neovim\`." >&2
+    echo "For a list of available versions, see \`asdf list-all ghq\`." >&2
     exit 1
   fi
 
@@ -33,12 +33,12 @@ install_ghq() {
   local tmp_dir=$(mktemp -d -t ghq_XXXXXX)
   local archive_path="${tmp_dir}/ghq.zip"
 
-  local cmd="curl -o ${archive_path} -sL"
+  local cmd="curl -o ${archive_path} -L"
   if [ -n "$GITHUB_API_TOKEN" ]; then
     cmd="$cmd --header 'Authorization: token $GITHUB_API_TOKEN'"
   fi
 
-  ${cmd} https://github.com/motemen/ghq/releases/download/${version}/ghq_${platform}_amd64.zip
+  ${cmd} https://github.com/motemen/ghq/releases/download/v${version}/ghq_${platform}_amd64.zip
 
   unzip -q -d ${tmp_dir} ${archive_path} || exit 1
   mkdir -p "${install_path}/bin"
