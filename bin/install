@@ -38,7 +38,7 @@ install_ghq() {
     cmd="$cmd --header 'Authorization: token $GITHUB_API_TOKEN'"
   fi
 
-  ${cmd} https://github.com/motemen/ghq/releases/download/v${version}/ghq_${platform}_amd64.zip
+  eval ${cmd} https://github.com/motemen/ghq/releases/download/v${version}/ghq_${platform}_amd64.zip
 
   unzip -q -d ${tmp_dir} ${archive_path} || exit 1
   mkdir -p "${install_path}/bin"

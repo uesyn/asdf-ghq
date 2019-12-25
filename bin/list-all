@@ -5,7 +5,7 @@ set -eo pipefail
 cmd="curl -sL"
 releases_url="https://api.github.com/repos/motemen/ghq/releases"
 
-if [ -n "$GITHUB_API_TOKEN" ]; then
+if [[ -n $GITHUB_API_TOKEN ]]; then
   cmd="$cmd --header 'Authorization: token $GITHUB_API_TOKEN'"
 fi
 
@@ -15,4 +15,4 @@ sort_versions() {
     LC_ALL=C sort -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n | awk '{print $2}'
 }
 
-$cmd $releases_url | grep 'tag_name' | sed -E "s/.*v(.*)\",/\1/" | sort_versions | xargs
+eval $cmd $releases_url | grep 'tag_name' | sed -E "s/.*v(.*)\",/\1/" | sort_versions | xargs
